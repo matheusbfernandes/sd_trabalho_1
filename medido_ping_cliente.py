@@ -25,8 +25,10 @@ serverSocket = socket(AF_INET, SOCK_DGRAM)
 serverSocket.settimeout(1.0)
 serverSocket.bind((recieve_host, recieve_port))
 
+
 def get_time():
     return int(round(time.time() * 1000))
+
 
 def wait_for_response():
     global packets_dropped
@@ -38,6 +40,7 @@ def wait_for_response():
         except Exception as e:
             packets_dropped = packets_dropped + 1
             return 'ERROR 522'
+
 
 def send_message(message):
     serverSocket.sendto(message, (remote_host, remote_port))
