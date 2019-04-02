@@ -3,29 +3,45 @@ import os
 import time
 
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def converter(string):
+    buf = ""
+    for ele in string:
+        if ele != ' ':
+            buf += ele
+    return int(buf)
 
 
-server_address = ('192.168.0.100', 10000)
-sock.connect(server_address)
+def main():
+    servidor_host = "192.168.0.100"
+    servidor_porta = 10000
 
-try:
-    message = os.urandom(131072)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    inicio = time.time()
-    sock.sendall(message)
+    servidor_endereco = (servidor_host, servidor_porta)
+    sock.connect(servidor_endereco)
 
-    # Look for the response
-    amount_received = 0
-    amount_expected = len(message)
+    try:
+        mensagem_inicio = "INICIO"
+        mensagem_para_bytes = mensagem_inicio.encode()
+        sock.send(mensagem_para_bytes)
 
-    while amount_received < amount_expected:
-        data = sock.recv(131072)
-        amount_received += len(data)
-        print('received "%s"' % data)
+        mensagem = os.urandom(10240)
+        for i in range(0, 10):
+            sock.sendall(mensagem)
 
-    fim = time.time()
-    print("taxa de transferencia de:%.2f" % (1 / (fim - inicio)))
-finally:
-    print('closing socket')
-    sock.close()
+        print("######")
+        # dado = sock.recv(10240)
+
+        # mensagem_final = "FIM"
+        # mensagem_para_bytes = mensagem_final.encode()
+        # sock.sendall(mensagem_para_bytes)
+        #
+        # tempo_total = converter(dado.decode())
+        # print(tempo_total)
+    finally:
+        print("Fechando socket...")
+        sock.close()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,33 +1,52 @@
 import socket
-import sys
+import time
 
-# Create a TCP/IP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Bind the socket to the port
-server_address = ('192.168.0.100', 10000)
-print(sys.stderr, 'starting up on %s port %s' % server_address)
-sock.bind(server_address)
+def main():
+    servidor_host = "192.168.0.100"
+    servidor_porta = 10000
 
-# Listen for incoming connections
-sock.listen(1)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-while True:
-    # Wait for a connection
-    print(sys.stderr, 'waiting for a connection')
-    connection, client_address = sock.accept()
-    try:
-        print(sys.stderr, 'connection from', client_address)
+    servidor_endereco = (servidor_host, servidor_porta)
+    print("Servidor: %s iniciado. Utilizando a porta: %s" % servidor_endereco)
+    sock.bind(servidor_endereco)
 
-        # Receive the data in small chunks and retransmit it
-        while True:
-            data = connection.recv(131072)
-            if data:
-                print(sys.stderr, 'sending data back to the client')
-                connection.sendall(data)
+    sock.listen(1)
+
+    while True:
+        print("Esperando por uma conexao...")
+        conexao, endereco_cliente = sock.accept()
+
+        try:
+            print("Conectado com:", endereco_cliente)
+            dados_bytes = conexao.recv(6)
+            dado_inicial = dados_bytes.decode()
+            type(dado_inicial)
+
+            if dado_inicial == "INICIO":
+                recebendo_dados = True
+
+                total_bytes = 0
+                while recebendo_dados:
+                    tempo_inicial = time.time()
+                    dados_bytes = conexao.recv(1024)
+                    total_bytes += len(dados_bytes)
+
+                    if not dados_bytes:
+                        tempo_final = time.time()
+                        tempo_total = tempo_final - tempo_inicial
+                        print(total_bytes)
+                        print(tempo_total)
+                        recebendo_dados = False
+
+                        print("Sem mais dados para receber de:", endereco_cliente)
             else:
-                print(sys.stderr, 'no more data from', client_address)
-                break
-    finally:
-        # Clean up the connection
-        connection.close()
+                print("Mensagem inical \"%s\" nao corresponde com o esperado." % dado_inicial)
+        finally:
+            print("Fechando a conexao...")
+            conexao.close()
+
+
+if __name__ == "__main__":
+    main()
