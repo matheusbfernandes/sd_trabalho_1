@@ -4,7 +4,7 @@ import os
 
 
 def get_time():
-    return time.time() * 1000
+    return time.time()
 
 
 def esperando_resposta(sock, pacotes_perdidos):
@@ -26,18 +26,18 @@ def enviar_mensagem(sock, mensagem, servidor_endereco, pacotes_perdidos):
 
 
 def calcular_media_rtt(media_rtt, rtt):
-    if media_rtt == -1:
+    if media_rtt == -1.0:
         return rtt
 
     return media_rtt * 0.8 + rtt * 0.2
 
 
 def main():
-    cliente_ip = "192.168.103.21"
+    cliente_ip = "192.168.0.100"
     cliente_porta = 10000
     cliente_endereco = (cliente_ip, cliente_porta)
     
-    servidor_ip = "192.168.103.20"
+    servidor_ip = "192.168.0.100"
     servidor_porta = 59330
     servidor_endereco = (servidor_ip, servidor_porta)
 
@@ -48,10 +48,10 @@ def main():
     num_pings = 10
     num_sequencia = 1
     pacotes_perdidos = 0
-    total_pacotes = 0.0
+    total_pacotes = 0
     
-    media_rtt = -1
-    rtt = 0
+    media_rtt = -1.0
+    rtt = 0.0
 
     mensagem = os.urandom(1024)
     tam_mensagem = len(mensagem)
@@ -65,16 +65,17 @@ def main():
                 print(mensagem_recebida)
             else:
                 rtt = float(mensagem_recebida) - tempo_envio
+                print(rtt)
                 media_rtt = calcular_media_rtt(media_rtt, rtt)
 
-            print("%d bytes, rtt = %3.f" % (tam_mensagem, rtt))
+            print("{:d} bytes, rtt = {:.3f}".format(tam_mensagem, rtt))
             num_sequencia += 1
             total_pacotes += 1
     finally:
         sock.close()
 
-    print("rtt medio: %3.f", media_rtt)
-    print("Pacotes perdidos: %2.f %", pacotes_perdidos / total_pacotes * 100)
+    print("rtt medio: {:.3f}".format(media_rtt))
+    print("Pacotes perdidos: {:.2f}%".format(pacotes_perdidos / total_pacotes * 100.0))
 
 
 if __name__ == "__main__":

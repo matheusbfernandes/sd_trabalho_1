@@ -9,6 +9,8 @@ def main():
     sock = socket(AF_INET, SOCK_DGRAM)
     sock.bind(servidor_endereco)
 
+    print("Servidor: {:s} iniciado. Utilizando a porta: {:d}".format(*servidor_endereco))
+
     while True:
         mensagem, cliente_endereco = sock.recvfrom(1024)
         sock.sendto(mensagem, cliente_endereco)
