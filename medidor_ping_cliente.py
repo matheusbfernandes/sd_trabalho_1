@@ -1,5 +1,5 @@
 import time
-from socket import *
+import socket
 import os
 
 
@@ -11,11 +11,11 @@ def esperando_resposta(sock, pacotes_perdidos):
     while True:
         try:
             mensagem, _ = sock.recvfrom(1024)
-            
+
             return str(get_time()), pacotes_perdidos
-        except Exception:
+        except (Exception):
             pacotes_perdidos += 1
-            
+
             return "ERROR 522", pacotes_perdidos
 
 
@@ -36,20 +36,20 @@ def main():
     cliente_ip = "192.168.0.100"
     cliente_porta = 10000
     cliente_endereco = (cliente_ip, cliente_porta)
-    
+
     servidor_ip = "192.168.0.100"
     servidor_porta = 59330
     servidor_endereco = (servidor_ip, servidor_porta)
 
-    sock = socket(AF_INET, SOCK_DGRAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.settimeout(1.0)
     sock.bind(cliente_endereco)
-    
+
     num_pings = 10
     num_sequencia = 1
     pacotes_perdidos = 0
     total_pacotes = 0
-    
+
     media_rtt = -1.0
     rtt = 0.0
 
@@ -62,13 +62,12 @@ def main():
             mensagem_recebida, pacotes_perdidos = enviar_mensagem(sock, mensagem, servidor_endereco, pacotes_perdidos)
 
             if mensagem_recebida == "ERROR 522":
-                print(mensagem_recebida)
+                print("{:s}, num_seq={:d}".format(mensagem_recebida, num_sequencia))
             else:
-                rtt = float(mensagem_recebida) - tempo_envio
-                print(rtt)
+                rtt = (float(mensagem_recebida) - tempo_envio) * 1000
                 media_rtt = calcular_media_rtt(media_rtt, rtt)
 
-            print("{:d} bytes, rtt = {:.3f}".format(tam_mensagem, rtt))
+            print("Enviado {:d} bytes, num_seq={:3d}, rtt={:.3f}".format(tam_mensagem, num_sequencia, rtt))
             num_sequencia += 1
             total_pacotes += 1
     finally:

@@ -1,4 +1,4 @@
-from socket import *
+import socket
 
 
 def main():
@@ -6,14 +6,19 @@ def main():
     servidor_porta = 59330
     servidor_endereco = (servidor_io, servidor_porta)
 
-    sock = socket(AF_INET, SOCK_DGRAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind(servidor_endereco)
 
+    print("Iniciando servidor...")
     print("Servidor: {:s} iniciado. Utilizando a porta: {:d}".format(*servidor_endereco))
 
-    while True:
-        mensagem, cliente_endereco = sock.recvfrom(1024)
-        sock.sendto(mensagem, cliente_endereco)
+    try:
+        while True:
+            mensagem, cliente_endereco = sock.recvfrom(1024)
+            sock.sendto(mensagem, cliente_endereco)
+    except (KeyboardInterrupt, SystemExit):
+        sock.close()
+        print("\nServidor esta sendo fechado...")
 
 
 if __name__ == "__main__":
