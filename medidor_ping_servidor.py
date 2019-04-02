@@ -1,16 +1,19 @@
 import socket
 
 
-def main():
-    servidor_io = "192.168.0.100"
-    servidor_porta = 59330
-    servidor_endereco = (servidor_io, servidor_porta)
+def get_servidor_endereco():
+    SERVIDOR_IP = "192.168.0.100"
+    SERVIDOR_PORTA = 59330
 
+    return SERVIDOR_IP, SERVIDOR_PORTA
+
+
+def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind(servidor_endereco)
+    sock.bind(get_servidor_endereco())
 
     print("Iniciando servidor...")
-    print("Servidor: {:s} iniciado. Utilizando a porta: {:d}".format(*servidor_endereco))
+    print("Servidor: {:s} iniciado. Utilizando a porta: {:d}".format(*get_servidor_endereco()))
 
     try:
         while True:

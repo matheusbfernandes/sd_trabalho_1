@@ -3,8 +3,18 @@ import socket
 import os
 
 
-def get_time():
-    return time.time()
+def get_cliente_endereco():
+    CLIENTE_IP = "192.168.0.100"
+    CLIENTE_PORTA = 10000
+
+    return CLIENTE_IP, CLIENTE_PORTA
+
+
+def get_servidor_endereco():
+    SERVIDOR_IP = "192.168.0.100"
+    SERVIDOR_PORTA = 59330
+
+    return SERVIDOR_IP, SERVIDOR_PORTA
 
 
 def esperando_resposta(sock, pacotes_perdidos):
@@ -12,15 +22,15 @@ def esperando_resposta(sock, pacotes_perdidos):
         try:
             mensagem, _ = sock.recvfrom(1024)
 
-            return str(get_time()), pacotes_perdidos
+            return str(time.time()), pacotes_perdidos
         except (Exception):
             pacotes_perdidos += 1
 
             return "ERROR 522", pacotes_perdidos
 
 
-def enviar_mensagem(sock, mensagem, servidor_endereco, pacotes_perdidos):
-    sock.sendto(mensagem, servidor_endereco)
+def enviar_mensagem(sock, mensagem, pacotes_perdidos):
+    sock.sendto(mensagem, get_servidor_endereco())
 
     return esperando_resposta(sock, pacotes_perdidos)
 
@@ -33,17 +43,9 @@ def calcular_media_rtt(media_rtt, rtt):
 
 
 def main():
-    cliente_ip = "192.168.0.100"
-    cliente_porta = 10000
-    cliente_endereco = (cliente_ip, cliente_porta)
-
-    servidor_ip = "192.168.0.100"
-    servidor_porta = 59330
-    servidor_endereco = (servidor_ip, servidor_porta)
-
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.settimeout(1.0)
-    sock.bind(cliente_endereco)
+    sock.bind(get_cliente_endereco())
 
     num_pings = 10
     num_sequencia = 1
@@ -58,8 +60,8 @@ def main():
 
     try:
         while num_sequencia <= num_pings:
-            tempo_envio = get_time()
-            mensagem_recebida, pacotes_perdidos = enviar_mensagem(sock, mensagem, servidor_endereco, pacotes_perdidos)
+            tempo_envio = time.time()
+            mensagem_recebida, pacotes_perdidos = enviar_mensagem(sock, mensagem, pacotes_perdidos)
 
             if mensagem_recebida == "ERROR 522":
                 print("{:s}, num_seq={:d}".format(mensagem_recebida, num_sequencia))
