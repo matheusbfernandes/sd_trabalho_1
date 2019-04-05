@@ -4,7 +4,7 @@ import java.io.*;
 public class EchoServer {
  public static void main(String[] args) throws IOException {
     ServerSocket serverSocket = null;
-    int porta = 3000;
+    int porta = 7013;
 
     try {
          serverSocket = new ServerSocket(porta);
@@ -27,7 +27,6 @@ public class EchoServer {
     System.out.println ("Waiting for input.....");
 
     PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-    System.out.println("Esta aqui");
     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     
     String inputLine;
@@ -36,7 +35,7 @@ public class EchoServer {
 
     while ((inputLine = in.readLine()) != null) {
         //System.out.println ("Server: " + inputLine);
-        System.out.print(qtdPacotesRecebidos + " ");
+        //System.out.print(qtdPacotesRecebidos + " ");
         out.println(qtdPacotesRecebidos);
         ++qtdPacotesRecebidos;
         //~ if(qtdPacotesRecebidos == 10) {
@@ -49,7 +48,8 @@ public class EchoServer {
 
          if (inputLine.equals("Bye.")) break;
     }
-
+    System.out.println();
+    
     out.close();
     in.close();
     clientSocket.close();

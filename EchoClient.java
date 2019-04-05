@@ -7,10 +7,10 @@ import java.util.concurrent.TimeUnit;
 public class EchoClient {
     public static void main(String[] args) throws IOException {
 
-        String serverHostname = new String ("192.168.101.40");
-		int porta = 3000;
+        String serverHostname = new String ("localhost");
+	int porta = 7013;
 
-		System.out.println ("Attemping to connect to host " + serverHostname + " on port " + porta + ".");
+	System.out.println ("Attemping to connect to host " + serverHostname + " on port " + porta + ".");
 
         Socket echoSocket = null;
         PrintWriter out = null;
@@ -18,11 +18,11 @@ public class EchoClient {
 
         try {
             echoSocket = new Socket(serverHostname, porta );
-
-			out = new PrintWriter(echoSocket.getOutputStream(), true);
+            
+            out = new PrintWriter(echoSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 
-		} catch (UnknownHostException e) {
+	} catch (UnknownHostException e) {
             System.err.println("Don't know about host: " + serverHostname);
             System.exit(1);
         } catch (IOException e) {
@@ -30,28 +30,43 @@ public class EchoClient {
             System.exit(1);
         }
 		
-		//byte[] array = new byte[1024];
-		//new Random().nextBytes(array);
-		//String mensagemAleatoria = new String(array,Charset.forName("UTF-8"));
-		String mensagemAleatoria = "aaaaaoeirudjskcmsndhfjehfjdkslsjdhfjufjdkdlskdjdkskdowkkkkkaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-		aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-		aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaappppppppppp
-		pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-		pppp";
+        //byte[] array = new byte[1024];
+        //new Random().nextBytes(array);
+        //String mensagemAleatoria = new String(array,Charset.forName("UTF-8"));
+        
+        //Mensagem de 1024 bytes (10 mensagens = 10kB)
+        String mensagemAleatoria = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "aaaaaaaaaaaaaaaaaaaaa";
 
-		System.out.println(mensagemAleatoria.length());
-		//String mensagemAleatoria = "oi";
-		int number_of_packets = 10;
-		long startTime = System.currentTimeMillis();
-		while (number_of_packets != 0) {
-			out.println(mensagemAleatoria);
-			System.out.println(in.readLine() +" "+ number_of_packets);
-			number_of_packets--;  
-		}
-		
-        System.out.println("Tempo = " + ((System.currentTimeMillis()) - startTime));
-		out.close();
-		in.close();
-		echoSocket.close();
+	
+        int number_of_packets = 1024;
+	long startTime = System.currentTimeMillis();
+        System.out.println("Tempo inicial: " + startTime);
+        
+	while (number_of_packets != 0) {
+            out.println(mensagemAleatoria);
+            System.out.println(in.readLine() +" "+ number_of_packets);
+            number_of_packets--;  
+	}
+        
+        long finalTime = System.currentTimeMillis();
+        
+	System.out.println("Tempo final: " + System.currentTimeMillis());
+        System.out.println("Tempo = " + (finalTime - startTime) + "ms");
+        double tempoEmSegundos = (finalTime-startTime)/100.0;
+        System.out.println("Tempo de envio de 1 MB em segundos: " + (finalTime-startTime)/1000.0 + " segundos ");
+        System.out.println("Velocidade de Upload: " + (1024/tempoEmSegundos) + " kBps");
+	out.close();
+	in.close();
+	echoSocket.close();
     }
 }
