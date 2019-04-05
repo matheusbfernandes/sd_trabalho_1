@@ -2,8 +2,8 @@ import socket
 
 
 def get_servidor_endereco():
-    SERVIDOR_IP = "192.168.0.100"
-    SERVIDOR_PORTA = 59330
+    SERVIDOR_IP = "18.204.102.146"
+    SERVIDOR_PORTA = 7013
 
     return SERVIDOR_IP, SERVIDOR_PORTA
 

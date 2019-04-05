@@ -4,15 +4,15 @@ import os
 
 
 def get_cliente_endereco():
-    CLIENTE_IP = "192.168.0.100"
-    CLIENTE_PORTA = 10000
+    CLIENTE_IP = "localhost"
+    CLIENTE_PORTA = 12000
 
     return CLIENTE_IP, CLIENTE_PORTA
 
 
 def get_servidor_endereco():
-    SERVIDOR_IP = "192.168.0.100"
-    SERVIDOR_PORTA = 59330
+    SERVIDOR_IP = "localhost"
+    SERVIDOR_PORTA = 12000
 
     return SERVIDOR_IP, SERVIDOR_PORTA
 
