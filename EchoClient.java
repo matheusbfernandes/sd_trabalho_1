@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 public class EchoClient {
     public static void main(String[] args) throws IOException {
 
-        String serverHostname = new String ("localhost");
+        String serverHostname = new String ("18.204.102.146");
 	int porta = 7013;
 
 	System.out.println ("Attemping to connect to host " + serverHostname + " on port " + porta + ".");
