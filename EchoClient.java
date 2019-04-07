@@ -3,6 +3,7 @@ import java.net.*;
 import java.util.Random;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
+import java.text.DecimalFormat;
 
 public class EchoClient {
     public static void main(String[] args) throws IOException {
@@ -48,25 +49,59 @@ public class EchoClient {
                 + "aaaaaaaaaaaaaaaaaaaaa";
 
 	
-        int number_of_packets = 1024;
+        int number_of_packets = 1;
 	long startTime = System.currentTimeMillis();
         System.out.println("Tempo inicial: " + startTime);
         
-	while (number_of_packets != 0) {
+	while (number_of_packets < 1024) {
             out.println(mensagemAleatoria);
-            System.out.println(in.readLine() +" "+ number_of_packets);
-            number_of_packets--;  
+            progressivePercentage(number_of_packets, 1024);
+            String resp = in.readLine();
+            //System.out.println(in.readLine() +" "+ number_of_packets);
+            number_of_packets++;  
 	}
         
         long finalTime = System.currentTimeMillis();
-        
-	System.out.println("Tempo final: " + System.currentTimeMillis());
+        DecimalFormat df = new DecimalFormat("0.000");
+	//System.out.println("Tempo final: " + System.currentTimeMillis());
         System.out.println("Tempo = " + (finalTime - startTime) + "ms");
         double tempoEmSegundos = (finalTime-startTime)/100.0;
-        System.out.println("Tempo de envio de 1 MB em segundos: " + (finalTime-startTime)/1000.0 + " segundos ");
+        System.out.println("Tempo de envio de 1 MB em segundos: " + df.format((finalTime-startTime)/1000.0) + " segundos ");
         System.out.println("Velocidade de Upload: " + (1024/tempoEmSegundos) + " kBps");
 	out.close();
 	in.close();
 	echoSocket.close();
+    }
+
+    public static void progressivePercentage(int progresso, int qtdDadosEnviados) {
+        //tamanho da barra
+        int tamMaxBarra = 50;
+        
+        //quanto porcento já foi concluido do total
+        double dPorcentagemConcluida = (progresso*100)/(double)qtdDadosEnviados;        
+        int iPorcentagemConcluida = (int)dPorcentagemConcluida;
+
+        char defaultChar = '-';
+        String icon = "*";
+        
+
+        //cria uma barra do tipo "--------------------------------------------------]"
+        String barra = new String(new char[tamMaxBarra]).replace('\0', defaultChar) + "]";
+        
+        StringBuilder barraConcluida = new StringBuilder();
+        barraConcluida.append("[");
+        for (int i = 0; i < iPorcentagemConcluida/2; i++) {
+            barraConcluida.append(icon);
+        }
+
+        DecimalFormat df = new DecimalFormat("0.00");
+        String barraRestante = barra.substring((iPorcentagemConcluida/2), barra.length());
+        System.out.print("\r" + barraConcluida + barraRestante + " " + df.format(dPorcentagemConcluida) + "% (" + (progresso) + "kB)");
+        if (progresso == qtdDadosEnviados) {
+            //String barraC = new String(new char[tamMaxBarra]).replace('\0', defaultChar) + "]";
+            //System.out.print("\r" + barraConcluida + barraRestante + " " + df.format(dPorcentagemConcluida) + "% (" + (progresso) + "kB)");
+            System.out.print("\n");
+        }
+
     }
 }
