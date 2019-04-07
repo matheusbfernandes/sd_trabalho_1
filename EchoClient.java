@@ -9,9 +9,9 @@ public class EchoClient {
     public static void main(String[] args) throws IOException {
 
         String serverHostname = new String ("18.204.102.146");
-	int porta = 7013;
+	    int porta = 7013;
 
-	System.out.println ("Attemping to connect to host " + serverHostname + " on port " + porta + ".");
+	    System.out.println ("Attemping to connect to host " + serverHostname + " on port " + porta + ".");
 
         Socket echoSocket = null;
         PrintWriter out = null;
@@ -23,7 +23,7 @@ public class EchoClient {
             out = new PrintWriter(echoSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 
-	} catch (UnknownHostException e) {
+	    } catch (UnknownHostException e) {
             System.err.println("Don't know about host: " + serverHostname);
             System.exit(1);
         } catch (IOException e) {
@@ -50,24 +50,26 @@ public class EchoClient {
 
 	
         int number_of_packets = 1;
-	long startTime = System.currentTimeMillis();
-        System.out.println("Tempo inicial: " + startTime);
+	    long startTime = System.currentTimeMillis();
+        //System.out.println("Tempo inicial: " + startTime);
         
-	while (number_of_packets < 1024) {
+	    while (number_of_packets < 1024) {
             out.println(mensagemAleatoria);
             progressivePercentage(number_of_packets, 1024);
             String resp = in.readLine();
             //System.out.println(in.readLine() +" "+ number_of_packets);
             number_of_packets++;  
-	}
-        
+	    }
         long finalTime = System.currentTimeMillis();
+
+        progressivePercentage(1024, 1024);
+
         DecimalFormat df = new DecimalFormat("0.000");
-	//System.out.println("Tempo final: " + System.currentTimeMillis());
-        System.out.println("Tempo = " + (finalTime - startTime) + "ms");
+	    //System.out.println("Tempo final: " + System.currentTimeMillis());
+        System.out.println("\nTempo = " + (finalTime - startTime) + " ms");
         double tempoEmSegundos = (finalTime-startTime)/100.0;
         System.out.println("Tempo de envio de 1 MB em segundos: " + df.format((finalTime-startTime)/1000.0) + " segundos ");
-        System.out.println("Velocidade de Upload: " + (1024/tempoEmSegundos) + " kBps");
+        System.out.println("Velocidade de Upload: " +  df.format(1024/tempoEmSegundos) + " kBps");
 	out.close();
 	in.close();
 	echoSocket.close();
@@ -96,7 +98,7 @@ public class EchoClient {
 
         DecimalFormat df = new DecimalFormat("0.00");
         String barraRestante = barra.substring((iPorcentagemConcluida/2), barra.length());
-        System.out.print("\r" + barraConcluida + barraRestante + " " + df.format(dPorcentagemConcluida) + "% (" + (progresso) + "kB)");
+        System.out.print("\r" + barraConcluida + barraRestante + " " + df.format(dPorcentagemConcluida) + "% (" + (progresso) + " kB)");
         if (progresso == qtdDadosEnviados) {
             //String barraC = new String(new char[tamMaxBarra]).replace('\0', defaultChar) + "]";
             //System.out.print("\r" + barraConcluida + barraRestante + " " + df.format(dPorcentagemConcluida) + "% (" + (progresso) + "kB)");
