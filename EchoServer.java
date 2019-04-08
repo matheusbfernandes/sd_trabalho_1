@@ -51,10 +51,10 @@ public class EchoServer extends Thread {
                 //System.out.println ("Server: " + inputLine); 
                 ++qtdPacotesRecebidos;
                 //Enviando para o cliente o numero do pacote recebido
-                out.println(qtdPacotesRecebidos); 
+                //out.println(qtdPacotesRecebidos); 
 
-                if (inputLine.equals("Bye.")) 
-                    break; 
+                //if (inputLine.equals("Bye.")) 
+                  //  break; 
                 } 
 
             out.close(); 

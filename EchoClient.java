@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 public class EchoClient {
     public static void main(String[] args) throws IOException {
 
-        String serverHostname = new String ("18.204.102.146");
+        String serverHostname = new String ("192.168.103.24");
 	    int porta = 7013;
 
 	    System.out.println ("Attemping to connect to host " + serverHostname + " on port " + porta + ".");
@@ -50,26 +50,26 @@ public class EchoClient {
 
 	
         int number_of_packets = 1;
-	    long startTime = System.currentTimeMillis();
+	    long startTime = System.nanoTime();
         //System.out.println("Tempo inicial: " + startTime);
         
-	    while (number_of_packets < 1024) {
+	    while (number_of_packets < 10240) {
             out.println(mensagemAleatoria);
-            progressivePercentage(number_of_packets, 1024);
-            String resp = in.readLine();
+            //progressivePercentage(number_of_packets, 1024);
+            //String resp = in.readLine();
             //System.out.println(in.readLine() +" "+ number_of_packets);
             number_of_packets++;  
 	    }
-        long finalTime = System.currentTimeMillis();
+        long finalTime = System.nanoTime();
 
         progressivePercentage(1024, 1024);
 
         DecimalFormat df = new DecimalFormat("0.000");
 	    //System.out.println("Tempo final: " + System.currentTimeMillis());
-        System.out.println("\nTempo = " + (finalTime - startTime) + " ms");
-        double tempoEmSegundos = (finalTime-startTime)/100.0;
-        System.out.println("Tempo de envio de 1 MB em segundos: " + df.format((finalTime-startTime)/1000.0) + " segundos ");
-        System.out.println("Velocidade de Upload: " +  df.format(1024/tempoEmSegundos) + " kBps");
+        System.out.println("\nTempo = " + (finalTime - startTime) + " ns");
+        double tempoEmSegundos = (finalTime-startTime)/1000000000.0;
+        System.out.println("Tempo de envio de 10 MB em segundos: " + df.format(tempoEmSegundos) + " segundos ");
+        System.out.println("Velocidade de Upload: " +  df.format(80/tempoEmSegundos) + " Mbps");
 	out.close();
 	in.close();
 	echoSocket.close();
