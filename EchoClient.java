@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 public class EchoClient {
     public static void main(String[] args) throws IOException {
 
-        String serverHostname = new String ("192.168.103.24");
+        String serverHostname = new String ("ibiza.dcc.ufla.br");
 	    int porta = 7013;
 
 	    System.out.println ("Attemping to connect to host " + serverHostname + " on port " + porta + ".");
@@ -62,7 +62,7 @@ public class EchoClient {
 	    }
         long finalTime = System.nanoTime();
 
-        progressivePercentage(1024, 1024);
+        //progressivePercentage(1024, 1024);
 
         DecimalFormat df = new DecimalFormat("0.000");
 	    //System.out.println("Tempo final: " + System.currentTimeMillis());
