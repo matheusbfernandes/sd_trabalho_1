@@ -1,7 +1,3 @@
-/*
-Autor: Matheus Bento Fernandes
-*/
-
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -9,15 +5,15 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 
 public class UDPCliente extends Thread {
-    private static final int TIMEOUT = 250;
+    private static final int TIMEOUT = 1;
     private static final int ENVIOS = 10;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        InetAddress enderecoServer = InetAddress.getByName("177.44.46.117");
+        InetAddress enderecoServer = InetAddress.getByName("ibiza.dcc.ufla.br");
         int portaServer = 59330;
 
-        String mensagem = "exemplo";
-        byte[] bytesParaEnviar = mensagem.getBytes();
+        int tamMensagem = 1024;
+        byte[] bytesParaEnviar = new byte[tamMensagem];
 
         DatagramSocket socket = new DatagramSocket();
         socket.setSoTimeout(TIMEOUT);
@@ -27,12 +23,10 @@ public class UDPCliente extends Thread {
 
         double tempoInicio, tempoFinal, tempoTotal;
         int qtdPerdidos = 0;
-        double rttTotal = 0, rttMin = 0, rttMax = 0;
+        double rttTotal = 0;
 
-        System.out.println("PING " + enderecoServer.getHostName() + ":" + portaServer + " (" + enderecoServer.getHostAddress()
-                + ":" + portaServer + ") com a mensagem: \"" + mensagem + "\"(" + bytesParaEnviar.length + " bytes)\n");
-
-        for (int i = 0; i < ENVIOS; ++i) {
+        for (int i = 1; i <= ENVIOS; ++i) {
+            double rtt = 0;
             tempoInicio = System.nanoTime();
             socket.send(pacoteEnviar);
 
@@ -40,26 +34,15 @@ public class UDPCliente extends Thread {
                 socket.receive(pacoteReceber);
                 tempoFinal = System.nanoTime();
 
-                tempoTotal = (tempoFinal - tempoInicio) / 1000000;
-                rttTotal += tempoTotal;
+                rtt = (tempoFinal - tempoInicio) / 1000000;
+                rttTotal += rtt;
 
-                if (rttMin == 0) {
-                    rttMin = tempoTotal;
-                }
-                else if (tempoTotal < rttMin) {
-                    rttMin = tempoTotal;
-                }
-                else if (tempoTotal > rttMax) {
-                    rttMax = tempoTotal;
-                }
-
-                System.out.println(pacoteReceber.getLength() + " bytes recebidos de " + pacoteReceber.getAddress().getHostAddress() + ":" + pacoteReceber.getPort()
-                        + ": sequencia de envio=" + (i+1) + ", tempo=" + tempoTotal + " ms");
+                System.out.printf("Enviado %d bytes, num_seq=%d, rtt=%.3f",tamMensagem, i, rtt);
             }
             catch (InterruptedIOException e) {
                 ++qtdPerdidos;
                 tempoTotal = 250L;
-                System.out.println("Timed out: sequencia de envio=" + (i+1));
+                System.out.println("timeout, num_seq=" + i);
             }
 
            sleep(1000L);
@@ -67,9 +50,7 @@ public class UDPCliente extends Thread {
 
         socket.close();
 
-        System.out.println("\n--- ping " + enderecoServer.getHostName() + ":" + portaServer + " estatisticas ---");
-        System.out.println(ENVIOS + " pacotes transmitidos, recebidos=" + (ENVIOS - qtdPerdidos) + ", perdidos=" + qtdPerdidos
-                + ", taxa de perdas=" + ((double) qtdPerdidos/(double) ENVIOS * 100) + "%");
-        System.out.printf("rtt minimo/medio/maximo = %.3f/%.3f/%.3f ms%n", rttMin, (rttTotal/ENVIOS), rttMax);
+        System.out.printf("rtt medio: %.3f ms%n", (rttTotal/ENVIOS));
+        System.out.printf("Pacotes perdidos: %.2f\n", (qtdPerdidos / ENVIOS * 100.0));
     }
 }
