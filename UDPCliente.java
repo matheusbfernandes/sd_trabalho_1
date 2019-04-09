@@ -5,14 +5,14 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 
 public class UDPCliente extends Thread {
-    private static final int TIMEOUT = 1;
+    private static final int TIMEOUT = 1000;
     private static final int ENVIOS = 10;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         InetAddress enderecoServer = InetAddress.getByName("ibiza.dcc.ufla.br");
-        int portaServer = 59330;
+        int portaServer = 7013;
 
-        int tamMensagem = 1024;
+        int tamMensagem = 64;
         byte[] bytesParaEnviar = new byte[tamMensagem];
 
         DatagramSocket socket = new DatagramSocket();
@@ -37,11 +37,10 @@ public class UDPCliente extends Thread {
                 rtt = (tempoFinal - tempoInicio) / 1000000;
                 rttTotal += rtt;
 
-                System.out.printf("Enviado %d bytes, num_seq=%d, rtt=%.3f",tamMensagem, i, rtt);
+                System.out.printf("Enviado %d bytes, num_seq=%d, rtt=%.3f\n",tamMensagem, i, rtt);
             }
             catch (InterruptedIOException e) {
                 ++qtdPerdidos;
-                tempoTotal = 250L;
                 System.out.println("timeout, num_seq=" + i);
             }
 
@@ -51,6 +50,6 @@ public class UDPCliente extends Thread {
         socket.close();
 
         System.out.printf("rtt medio: %.3f ms%n", (rttTotal/ENVIOS));
-        System.out.printf("Pacotes perdidos: %.2f\n", (qtdPerdidos / ENVIOS * 100.0));
+        System.out.printf("Pacotes perdidos: %.2f\n", (((double)qtdPerdidos / (double)ENVIOS) * 100.0));
     }
 }
