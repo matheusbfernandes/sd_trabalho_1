@@ -17,7 +17,7 @@ def main():
 
     try:
         while True:
-            mensagem, cliente_endereco = sock.recvfrom(1024)
+            mensagem, cliente_endereco = sock.recvfrom(4096)
             sock.sendto(mensagem, cliente_endereco)
     except (KeyboardInterrupt, SystemExit):
         sock.close()
