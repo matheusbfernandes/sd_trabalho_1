@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 
-public class UDPCliente extends Thread {
+public class MedidorPingCliente extends Thread {
     private static final int TIMEOUT = 1000;
     private static final int ENVIOS = 10;
 
